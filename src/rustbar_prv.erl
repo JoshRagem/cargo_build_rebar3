@@ -74,5 +74,13 @@ copy_lib(LibName, SourceDir, OutDir) ->
 
 extract_lib_name(TomlFile) ->
     {ok, Toml} = etoml:file(TomlFile),
-    #{<<"lib">> := #{<<"name">> := LibName}} = maps:from_list(Toml),
+    #{<<"lib">> := #{<<"name">> := LibName}} = from_list_recurse(Toml),
     binary_to_list(LibName).
+
+from_list_recurse(MaybeList) when is_list(MaybeList) ->
+    Hold = maps:from_list(MaybeList),
+    maps:map(fun (_K, V) ->
+                     from_list_recurse(V)
+             end, Hold);
+from_list_recurse(V) ->
+    V.
