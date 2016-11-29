@@ -52,9 +52,11 @@ do(State) ->
 format_error(Reason) ->
     io_lib:format("error: ~p", [Reason]).
 
-get_result(Port, Acc) ->
+get_result(Port) ->
     receive
-        Thing ->
-            io:format("thing=~p got thing",[Thing]),
-            get_result(Port, Acc)
+        {Port, {exit_status, 0}} ->
+            {ok, 0};
+        {Port, {exit_status, Code}} ->
+            io:format("got exit ~p", [Code]),
+            {error, Code}
     end.
