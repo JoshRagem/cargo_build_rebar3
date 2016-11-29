@@ -2,7 +2,8 @@
 
 -export([init/1, do/1, format_error/1]).
 
--define(PROVIDER, rustbar).
+-define(PROVIDER, compile).
+-define(NAMESPACE, rs).
 -define(DEPS, [app_discovery]).
 
 %% ===================================================================
@@ -12,10 +13,11 @@
 init(State) ->
     Provider = providers:create([
             {name, ?PROVIDER},            % The 'user friendly' name of the task
+            {namespace, ?NAMESPACE},
             {module, ?MODULE},            % The module implementation of the task
             {bare, true},                 % The task can be run by the user, always true
             {deps, ?DEPS},                % The list of dependencies
-            {example, "rebar3 rustbar"}, % How to use the plugin
+            {example, "rebar3 rs compile"}, % How to use the plugin
             {opts, []},                   % list of options understood by the plugin
             {short_desc, "A rebar plugin"},
             {desc, "A rebar plugin"}
