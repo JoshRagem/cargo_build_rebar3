@@ -67,4 +67,4 @@ get_result(Port) ->
     end.
 
 copy_lib(SourceDir, OutDir) ->
-    DebugLib = filename:join(SourceDir, "target", "debug", "lib"++LibName++".so").
+    ok.
