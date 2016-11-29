@@ -37,10 +37,36 @@ do(State) ->
          Opts = rebar_app_info:opts(AppInfo),
          OutDir = rebar_app_info:out_dir(AppInfo),
          SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
-         os:cmd("cargo build")
+         CargoPort = erlang:open_port({spawn, "cargo"}, [{cd, SourceDir}, {args, ["build"]}]),
+         Res = get_result(CargoPort, []),
+         io_lib:format("res=~p cargo build~n", [Res])
      end || AppInfo <- Apps],
     {ok, State}.
 
 -spec format_error(any()) ->  iolist().
 format_error(Reason) ->
     io_lib:format("error: ~p", [Reason]).
+
+get_result(Port, Acc) ->
+    receive
+        {Port, {data, Bytes}} ->
+            get_result(Port, [Acc|Bytes]);
+        {Port, eof} ->
+            Port ! {self(), close},
+            receive
+                {Port, closed} ->
+                    true
+            end,
+            receive
+                {'EXIT',  Port,  _} ->
+                    ok
+            after 1 ->              % force context switch
+                    ok
+            end,
+            ExitCode =
+                receive
+                    {Port, {exit_status, Code}} ->
+                        Code
+                end,
+            {ExitCode, lists:flatten(Acc)}
+    end.
