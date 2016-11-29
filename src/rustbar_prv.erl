@@ -42,7 +42,7 @@ do(State) ->
                  OutDir = rebar_app_info:out_dir(AppInfo),
                  SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
                  CargoPort = erlang:open_port({spawn_executable, CargoPath}, [{cd, SourceDir}, {args, ["build"]}, exit_status, use_stdio]),
-                 Res = get_result(CargoPort, []),
+                 Res = get_result(CargoPort),
                  io:format("res=~p cargo build~n", [Res])
              end || AppInfo <- Apps]
     end,
