@@ -42,10 +42,12 @@ do(State) ->
                  OutDir = rebar_app_info:out_dir(AppInfo),
                  io:format("out=~p~n",[OutDir]),
                  SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
+                 TomlFile = filename:join(SourceDir, "Cargo.toml"),
+                 LibName = extract_lib_name(TomlFile),
                  CargoPort = erlang:open_port({spawn_executable, CargoPath}, [{cd, SourceDir}, {args, ["build"]}, exit_status, use_stdio]),
                  case get_result(CargoPort) of
                      {ok, _} ->
-                         copy_lib(SourceDir, OutDir);
+                         copy_lib(LibName, SourceDir, OutDir);
                      {error, Code} ->
                          erlang:error({cargo_failure, Code})
                  end
@@ -66,5 +68,11 @@ get_result(Port) ->
             {error, Code}
     end.
 
-copy_lib(SourceDir, OutDir) ->
-    ok.
+copy_lib(LibName, SourceDir, OutDir) ->
+    DebugLib = filename:join(SourceDir, "target", "debug", "lib"++LibName++".so"),
+    OutPriv = filename:join(OutDir, "priv"),
+    os:cmd("cp "++DebugLib++" "++OutPriv).
+
+extract_lib_name(TomlFile) ->
+    #{<<"lib">> := #{<<"name">> := LibName}} = maps:from_list(etoml:file(TomlFile)),
+    binary_to_list(LibName).

@@ -1,1 +1,4 @@
-[].
+[{<<"etoml">>,
+  {git,"https://github.com/JoshRagem/etoml.git",
+       {ref,"7963abb633c3da0ce916dba4578247bd558cc1cb"}},
+  0}].
