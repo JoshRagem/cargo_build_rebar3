@@ -70,6 +70,7 @@ get_result(Port) ->
 copy_lib(LibName, SourceDir, OutDir) ->
     DebugLib = filename:join(SourceDir, "target/debug/lib"++LibName++".so"),
     OutPriv = filename:join(OutDir, "priv"),
+    io:format("cmd=~p",["cp "++DebugLib++" "++OutPriv]),
     os:cmd("cp "++DebugLib++" "++OutPriv).
 
 extract_lib_name(TomlFile) ->
