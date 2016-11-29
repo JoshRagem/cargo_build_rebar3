@@ -55,6 +55,6 @@ format_error(Reason) ->
 get_result(Port, Acc) ->
     receive
         Thing ->
-            io:format("thing=~p got thing"),
+            io:format("thing=~p got thing",[Thing]),
             get_result(Port, Acc)
     end.
