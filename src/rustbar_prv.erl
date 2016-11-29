@@ -33,14 +33,19 @@ do(State) ->
                AppInfo ->
                    [AppInfo]
            end,
-    [begin
-         Opts = rebar_app_info:opts(AppInfo),
-         OutDir = rebar_app_info:out_dir(AppInfo),
-         SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
-         CargoPort = erlang:open_port({spawn, "cargo"}, [{cd, SourceDir}, {args, ["build"]}]),
-         Res = get_result(CargoPort, []),
-         io_lib:format("res=~p cargo build~n", [Res])
-     end || AppInfo <- Apps],
+    case os:find_executable("cargo") of
+        false ->
+            erlang:error(cargo_not_found);
+        CargoPath ->
+            [begin
+                 Opts = rebar_app_info:opts(AppInfo),
+                 OutDir = rebar_app_info:out_dir(AppInfo),
+                 SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
+                 CargoPort = erlang:open_port({spawn_executable, CargoPath}, [{cd, SourceDir}, {args, ["build"]}]),
+                 Res = get_result(CargoPort, []),
+                 io_lib:format("res=~p cargo build~n", [Res])
+             end || AppInfo <- Apps]
+    end,
     {ok, State}.
 
 -spec format_error(any()) ->  iolist().
