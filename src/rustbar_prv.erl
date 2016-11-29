@@ -40,10 +40,15 @@ do(State) ->
             [begin
                  Opts = rebar_app_info:opts(AppInfo),
                  OutDir = rebar_app_info:out_dir(AppInfo),
+                 io:format("out=~p~n",[OutDir]),
                  SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
                  CargoPort = erlang:open_port({spawn_executable, CargoPath}, [{cd, SourceDir}, {args, ["build"]}, exit_status, use_stdio]),
-                 Res = get_result(CargoPort),
-                 io:format("res=~p cargo build~n", [Res])
+                 case get_result(CargoPort) of
+                     {ok, _} ->
+                         copy_lib(SourceDir, OutDir);
+                     {error, Code} ->
+                         erlang:error({cargo_failure, Code})
+                 end
              end || AppInfo <- Apps]
     end,
     {ok, State}.
@@ -60,3 +65,6 @@ get_result(Port) ->
             io:format("got exit ~p", [Code]),
             {error, Code}
     end.
+
+copy_lib(SourceDir, OutDir) ->
+    DebugLib = filename:join(SourceDir, "target", "debug", "lib"++LibName++".so").
