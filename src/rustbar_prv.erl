@@ -40,7 +40,6 @@ do(State) ->
             [begin
                  Opts = rebar_app_info:opts(AppInfo),
                  OutDir = rebar_app_info:out_dir(AppInfo),
-                 io:format("out=~p~n",[OutDir]),
                  SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
                  TomlFile = filename:join(SourceDir, "Cargo.toml"),
                  LibName = extract_lib_name(TomlFile),
@@ -74,6 +73,6 @@ copy_lib(LibName, SourceDir, OutDir) ->
     os:cmd("cp "++DebugLib++" "++OutPriv).
 
 extract_lib_name(TomlFile) ->
-    io:format("toml=~p",[TomlFile]),
-    #{<<"lib">> := #{<<"name">> := LibName}} = maps:from_list(etoml:file(TomlFile)),
+    {ok, Toml} = etoml:file(TomlFile),
+    #{<<"lib">> := #{<<"name">> := LibName}} = maps:from_list(Toml),
     binary_to_list(LibName).
