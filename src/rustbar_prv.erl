@@ -78,9 +78,13 @@ extract_lib_name(TomlFile) ->
     binary_to_list(LibName).
 
 from_list_recurse(MaybeList) when is_list(MaybeList) ->
-    Hold = maps:from_list(MaybeList),
-    maps:map(fun (_K, V) ->
-                     from_list_recurse(V)
-             end, Hold);
+    try maps:from_list(MaybeList) of
+        Hold ->
+            maps:map(fun (_K, V) ->
+                             from_list_recurse(V)
+                     end, Hold)
+    catch _:_ ->
+            MaybeList
+    end;
 from_list_recurse(V) ->
     V.
