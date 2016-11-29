@@ -43,7 +43,7 @@ do(State) ->
                  SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
                  CargoPort = erlang:open_port({spawn_executable, CargoPath}, [{cd, SourceDir}, {args, ["build"]}]),
                  Res = get_result(CargoPort, []),
-                 io_lib:format("res=~p cargo build~n", [Res])
+                 io:format("res=~p cargo build~n", [Res])
              end || AppInfo <- Apps]
     end,
     {ok, State}.
@@ -55,22 +55,28 @@ format_error(Reason) ->
 get_result(Port, Acc) ->
     receive
         {Port, {data, Bytes}} ->
+            io:format("got bytes"),
             get_result(Port, [Acc|Bytes]);
         {Port, eof} ->
+            io:format("got eof"),
             Port ! {self(), close},
             receive
                 {Port, closed} ->
+                    io:format("got closed"),
                     true
             end,
             receive
                 {'EXIT',  Port,  _} ->
+                    io:format("got EXIT"),
                     ok
             after 1 ->              % force context switch
+                    io:format("got no EXIT"),
                     ok
             end,
             ExitCode =
                 receive
                     {Port, {exit_status, Code}} ->
+                        io:format("got exit status"),
                         Code
                 end,
             {ExitCode, lists:flatten(Acc)}
