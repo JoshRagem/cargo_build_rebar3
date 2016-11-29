@@ -74,5 +74,6 @@ copy_lib(LibName, SourceDir, OutDir) ->
     os:cmd("cp "++DebugLib++" "++OutPriv).
 
 extract_lib_name(TomlFile) ->
+    io:format("toml=~p",[TomlFile]),
     #{<<"lib">> := #{<<"name">> := LibName}} = maps:from_list(etoml:file(TomlFile)),
     binary_to_list(LibName).
