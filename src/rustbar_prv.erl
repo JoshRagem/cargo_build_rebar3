@@ -68,7 +68,7 @@ get_result(Port) ->
     end.
 
 copy_lib(LibName, SourceDir, OutDir) ->
-    DebugLib = filename:join(SourceDir, "target", "debug", "lib"++LibName++".so"),
+    DebugLib = filename:join(SourceDir, "target/debug/lib"++LibName++".so"),
     OutPriv = filename:join(OutDir, "priv"),
     os:cmd("cp "++DebugLib++" "++OutPriv).
 
