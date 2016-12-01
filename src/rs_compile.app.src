@@ -1,5 +1,5 @@
-{application, rustbar,
- [{description, "A rebar plugin"},
+{application, rs_compile,
+ [{description, "A rebar plugin to 'cargo build' rust source"},
   {vsn, "0.1.0"},
   {registered, []},
   {applications,

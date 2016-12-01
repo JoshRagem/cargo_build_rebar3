@@ -1,7 +1,7 @@
-rustbar
+rs_compile
 =====
 
-A rebar plugin
+A rebar plugin to `cargo build` rust source files
 
 Build
 -----
@@ -14,13 +14,13 @@ Use
 Add the plugin to your rebar config:
 
     {plugins, [
-        { rustbar, ".*", {git, "git@host:user/rustbar.git", {tag, "0.1.0"}}}
+        { rs_compile, ".*", {git, "git@github.com:JoshRagem/rs_compile.git", {tag, "0.1.0"}}}
     ]}.
 
 Then just call your plugin directly in an existing application:
 
 
-    $ rebar3 rustbar
-    ===> Fetching rustbar
-    ===> Compiling rustbar
+    $ rebar3 rs compile
+    ===> Fetching rs_compile
+    ===> Compiling rs_compile
     <Plugin Output>

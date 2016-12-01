@@ -1,4 +1,4 @@
--module(rustbar_prv).
+-module(rs_compile_prv).
 
 -export([init/1, do/1, format_error/1]).
 
@@ -38,7 +38,6 @@ do(State) ->
             erlang:error(cargo_not_found);
         CargoPath ->
             [begin
-                 Opts = rebar_app_info:opts(AppInfo),
                  OutDir = rebar_app_info:out_dir(AppInfo),
                  SourceDir = filename:join(rebar_app_info:dir(AppInfo), "rust_files"),
                  TomlFile = filename:join(SourceDir, "Cargo.toml"),
