@@ -1,4 +1,6 @@
-[{<<"etoml">>,
-  {git,"https://github.com/JoshRagem/etoml.git",
-       {ref,"7963abb633c3da0ce916dba4578247bd558cc1cb"}},
-  0}].
+{"1.1.0",
+[{<<"etoml">>,{pkg,<<"etoml">>,<<"0.1.0">>},0}]}.
+[
+{pkg_hash,[
+ {<<"etoml">>, <<"CF65F87B4C07FF05183AD3198148B6583035E1588DA930E698ADC39AFA1AE03D">>}]}
+].
